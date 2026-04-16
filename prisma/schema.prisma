@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Analysis {
+  id                   String   @id @default(cuid())
+  score                Int
+  grade                String
+  summary              String   @db.Text
+  categoryScores       Json
+  strengths            Json
+  issues               Json
+  fixSteps             Json
+  tags                 Json
+  titleOptions         Json
+  optimizedDescription String   @db.Text
+  pinnedComment        String   @db.Text
+  channelKeywords      Json
+  quickWins            Json
+  input                Json
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  channelProfile   ChannelProfile? @relation(fields: [channelProfileId], references: [id])
+  channelProfileId String?
+
+  @@map("analyses")
+}
+
+model ChannelProfile {
+  id         String     @id @default(cuid())
+  name       String
+  niche      String
+  size       String
+  analyses   Analysis[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@map("channel_profiles")
+}
