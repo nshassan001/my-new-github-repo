@@ -1,0 +1,200 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Auth / Users ───────────────────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+  rankings RankingList[]
+  votes    Vote[]
+  comments Comment[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ─── Rankings ───────────────────────────────────────────────────────────────
+
+model RankingList {
+  id          String   @id @default(cuid())
+  title       String
+  description String?  @db.Text
+  category    String
+  isPublic    Boolean  @default(true)
+  aiGenerated Boolean  @default(false)
+  slug        String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  items    RankingItem[]
+  votes    Vote[]
+  comments Comment[]
+  tags     Tag[]
+
+  @@map("ranking_lists")
+}
+
+model RankingItem {
+  id          String  @id @default(cuid())
+  title       String
+  description String? @db.Text
+  imageUrl    String?
+  rank        Int
+  score       Float   @default(0)
+  aiReasoning String? @db.Text
+
+  rankingListId String
+  rankingList   RankingList @relation(fields: [rankingListId], references: [id], onDelete: Cascade)
+
+  votes Vote[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("ranking_items")
+}
+
+model Vote {
+  id        String   @id @default(cuid())
+  value     Int      @default(1)
+  createdAt DateTime @default(now())
+
+  userId        String
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rankingListId String
+  rankingList   RankingList  @relation(fields: [rankingListId], references: [id], onDelete: Cascade)
+  rankingItemId String?
+  rankingItem   RankingItem? @relation(fields: [rankingItemId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, rankingListId, rankingItemId])
+  @@map("votes")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rankingListId String
+  rankingList   RankingList @relation(fields: [rankingListId], references: [id], onDelete: Cascade)
+
+  @@map("comments")
+}
+
+model Tag {
+  id   String @id @default(cuid())
+  name String @unique
+
+  rankingLists RankingList[]
+
+  @@map("tags")
+}
+
+model Category {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  slug        String  @unique
+  description String?
+  icon        String?
+
+  @@map("categories")
+}
+
+// ─── YouTube SEO Analysis ────────────────────────────────────────────────────
+
+model Analysis {
+  id                   String   @id @default(cuid())
+  score                Int
+  grade                String
+  summary              String   @db.Text
+  categoryScores       Json
+  strengths            Json
+  issues               Json
+  fixSteps             Json
+  tags                 Json
+  titleOptions         Json
+  optimizedDescription String   @db.Text
+  pinnedComment        String   @db.Text
+  channelKeywords      Json
+  quickWins            Json
+  input                Json
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  channelProfile   ChannelProfile? @relation(fields: [channelProfileId], references: [id])
+  channelProfileId String?
+
+  @@map("analyses")
+}
+
+model ChannelProfile {
+  id        String     @id @default(cuid())
+  name      String
+  niche     String
+  size      String
+  analyses  Analysis[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@map("channel_profiles")
+}
