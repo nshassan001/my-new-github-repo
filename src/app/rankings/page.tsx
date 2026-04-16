@@ -5,17 +5,21 @@ import Link from "next/link";
 import { BarChart3, TrendingUp, Sparkles } from "lucide-react";
 
 async function getTopRankings() {
-  return prisma.rankingList.findMany({
-    where: { isPublic: true },
-    orderBy: { createdAt: "desc" },
-    take: 24,
-    include: {
-      author: { select: { id: true, name: true, image: true } },
-      items: { orderBy: { rank: "asc" } },
-      tags: true,
-      _count: { select: { votes: true, comments: true, items: true } },
-    },
-  });
+  try {
+    return await prisma.rankingList.findMany({
+      where: { isPublic: true },
+      orderBy: { createdAt: "desc" },
+      take: 24,
+      include: {
+        author: { select: { id: true, name: true, image: true } },
+        items: { orderBy: { rank: "asc" } },
+        tags: true,
+        _count: { select: { votes: true, comments: true, items: true } },
+      },
+    });
+  } catch {
+    return [];
+  }
 }
 
 export const metadata = {
