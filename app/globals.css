@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0f0f0f;
+  --foreground: #f5f5f5;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: #f9f9f9;
+    --foreground: #111111;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Inter, system-ui, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #D85A30 transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #D85A30;
+    border-radius: 2px;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-white/5 border border-white/10 rounded-xl p-5;
+  }
+  .btn-primary {
+    @apply bg-brand hover:bg-brand-dark text-white font-semibold px-6 py-2.5 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-secondary {
+    @apply bg-white/10 hover:bg-white/20 text-white font-medium px-5 py-2 rounded-lg transition-colors duration-200;
+  }
+  .input-field {
+    @apply bg-white/5 border border-white/15 rounded-lg px-4 py-2.5 text-white placeholder:text-white/30 focus:outline-none focus:border-brand/60 focus:ring-1 focus:ring-brand/30 transition-colors w-full;
+  }
+  .label {
+    @apply text-sm font-medium text-white/70 mb-1.5 block;
+  }
+  .grade-s { @apply text-yellow-400; }
+  .grade-a { @apply text-green-400; }
+  .grade-b { @apply text-blue-400; }
+  .grade-c { @apply text-orange-400; }
+  .grade-d { @apply text-red-400; }
+  .grade-f { @apply text-red-600; }
+}
