@@ -3,12 +3,14 @@ import { prisma } from "@/lib/db";
 import { analyzeVideo } from "@/lib/anthropic";
 import { VideoInput } from "@/types";
 
+const s = JSON.stringify;
+const p = (v: string) => { try { return JSON.parse(v); } catch { return v; } };
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const input: VideoInput = body;
 
-    // Validate required fields
     if (!input.title || !input.keyword) {
       return NextResponse.json(
         { error: "Title and keyword are required" },
@@ -17,28 +19,25 @@ export async function POST(request: NextRequest) {
     }
 
     const id = crypto.randomUUID();
-
-    // Run AI analysis
     const result = await analyzeVideo(input, id);
 
-    // Persist to database
     await prisma.analysis.create({
       data: {
         id: result.id,
         score: result.score,
         grade: result.grade,
         summary: result.summary,
-        categoryScores: result.categoryScores as object,
-        strengths: result.strengths as string[],
-        issues: result.issues as string[],
-        fixSteps: result.fixSteps as string[],
-        tags: result.tags as object[],
-        titleOptions: result.titleOptions as string[],
+        categoryScores: s(result.categoryScores),
+        strengths: s(result.strengths),
+        issues: s(result.issues),
+        fixSteps: s(result.fixSteps),
+        tags: s(result.tags),
+        titleOptions: s(result.titleOptions),
         optimizedDescription: result.optimizedDescription,
         pinnedComment: result.pinnedComment,
-        channelKeywords: result.channelKeywords as string[],
-        quickWins: result.quickWins as string[],
-        input: result.input as object,
+        channelKeywords: s(result.channelKeywords),
+        quickWins: s(result.quickWins),
+        input: s(result.input),
       },
     });
 
@@ -46,12 +45,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Analysis error:", error);
     return NextResponse.json(
-      {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Failed to analyze video. Please try again.",
-      },
+      { error: error instanceof Error ? error.message : "Failed to analyze video." },
       { status: 500 }
     );
   }
@@ -66,10 +60,25 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const analysis = await prisma.analysis.findUnique({ where: { id } });
-    if (!analysis) {
+    const row = await prisma.analysis.findUnique({ where: { id } });
+    if (!row) {
       return NextResponse.json({ error: "Analysis not found" }, { status: 404 });
     }
+
+    // Parse JSON strings back to objects for the response
+    const analysis = {
+      ...row,
+      categoryScores: p(row.categoryScores),
+      strengths: p(row.strengths),
+      issues: p(row.issues),
+      fixSteps: p(row.fixSteps),
+      tags: p(row.tags),
+      titleOptions: p(row.titleOptions),
+      channelKeywords: p(row.channelKeywords),
+      quickWins: p(row.quickWins),
+      input: p(row.input),
+    };
+
     return NextResponse.json(analysis);
   } catch (error) {
     console.error("Fetch error:", error);

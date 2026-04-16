@@ -1,9 +1,10 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
 }
 
 // ─── Auth / Users ───────────────────────────────────────────────────────────
@@ -33,12 +34,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -72,7 +73,7 @@ model VerificationToken {
 model RankingList {
   id          String   @id @default(cuid())
   title       String
-  description String?  @db.Text
+  description String?
   category    String
   isPublic    Boolean  @default(true)
   aiGenerated Boolean  @default(false)
@@ -94,11 +95,11 @@ model RankingList {
 model RankingItem {
   id          String  @id @default(cuid())
   title       String
-  description String? @db.Text
+  description String?
   imageUrl    String?
   rank        Int
   score       Float   @default(0)
-  aiReasoning String? @db.Text
+  aiReasoning String?
 
   rankingListId String
   rankingList   RankingList @relation(fields: [rankingListId], references: [id], onDelete: Cascade)
@@ -129,7 +130,7 @@ model Vote {
 
 model Comment {
   id        String   @id @default(cuid())
-  content   String   @db.Text
+  content   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -166,18 +167,18 @@ model Analysis {
   id                   String   @id @default(cuid())
   score                Int
   grade                String
-  summary              String   @db.Text
-  categoryScores       Json
-  strengths            Json
-  issues               Json
-  fixSteps             Json
-  tags                 Json
-  titleOptions         Json
-  optimizedDescription String   @db.Text
-  pinnedComment        String   @db.Text
-  channelKeywords      Json
-  quickWins            Json
-  input                Json
+  summary              String
+  categoryScores       String
+  strengths            String
+  issues               String
+  fixSteps             String
+  tags                 String
+  titleOptions         String
+  optimizedDescription String
+  pinnedComment        String
+  channelKeywords      String
+  quickWins            String
+  input                String
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 
