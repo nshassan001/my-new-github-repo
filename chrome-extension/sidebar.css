@@ -1,0 +1,515 @@
+/* =====================================================
+   RankSpark — YouTube SEO  |  Sidebar Styles
+   Primary: #D85A30  (orange-red brand color)
+   ===================================================== */
+
+/* ─── Reset & Variables ──────────────────────────────── */
+#rankspark-sidebar,
+#rankspark-sidebar * {
+  box-sizing: border-box;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.4;
+}
+
+:root {
+  --rs-primary: #D85A30;
+  --rs-primary-dark: #b84a22;
+  --rs-primary-light: #f5ede9;
+  --rs-bg: #ffffff;
+  --rs-border: #e8eaed;
+  --rs-text: #202124;
+  --rs-text-muted: #5f6368;
+  --rs-pass: #38a169;
+  --rs-fail: #e53e3e;
+  --rs-shadow: 0 2px 16px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.08);
+  --rs-radius: 12px;
+  --rs-sidebar-w: 340px;
+}
+
+/* ─── Sidebar Container ──────────────────────────────── */
+#rankspark-sidebar {
+  position: fixed;
+  top: 56px;           /* below YouTube Studio top nav */
+  right: 0;
+  width: var(--rs-sidebar-w);
+  height: calc(100vh - 56px);
+  background: var(--rs-bg);
+  border-left: 1px solid var(--rs-border);
+  box-shadow: var(--rs-shadow);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  overflow: hidden;
+}
+
+#rankspark-sidebar.rs-hidden {
+  transform: translateX(var(--rs-sidebar-w));
+}
+
+/* ─── Toggle Button ──────────────────────────────────── */
+#rankspark-toggle {
+  position: fixed;
+  top: 50%;
+  right: var(--rs-sidebar-w);
+  transform: translateY(-50%);
+  width: 28px;
+  height: 56px;
+  background: var(--rs-primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px 0 0 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  z-index: 2001;
+  box-shadow: -2px 2px 8px rgba(0,0,0,0.18);
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.15s;
+  line-height: 1;
+  padding: 0;
+}
+
+#rankspark-toggle:hover {
+  background: var(--rs-primary-dark);
+}
+
+/* ─── Header ─────────────────────────────────────────── */
+.rs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--rs-border);
+  background: linear-gradient(135deg, #fff 0%, var(--rs-primary-light) 100%);
+  flex-shrink: 0;
+}
+
+.rs-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rs-logo-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--rs-primary);
+  letter-spacing: -0.3px;
+}
+
+.rs-badge {
+  background: var(--rs-primary);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 2px 6px;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+
+/* ─── Scrollable Content Area ────────────────────────── */
+.rs-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0;
+  scroll-behavior: smooth;
+}
+
+.rs-scroll-area::-webkit-scrollbar {
+  width: 4px;
+}
+
+.rs-scroll-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.rs-scroll-area::-webkit-scrollbar-thumb {
+  background: var(--rs-border);
+  border-radius: 2px;
+}
+
+/* ─── Idle / Loading States ──────────────────────────── */
+.rs-idle-state,
+.rs-analyzing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  gap: 12px;
+  min-height: 220px;
+}
+
+.rs-idle-icon {
+  opacity: 0.7;
+}
+
+.rs-idle-text {
+  font-size: 13px;
+  color: var(--rs-text-muted);
+  text-align: center;
+  margin: 0;
+  max-width: 220px;
+}
+
+.rs-error-text {
+  color: var(--rs-fail) !important;
+  font-weight: 500;
+}
+
+.rs-hint-text {
+  font-size: 11px;
+  color: var(--rs-text-muted);
+  text-align: center;
+  margin: 0;
+}
+
+/* Spinner */
+.rs-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--rs-border);
+  border-top-color: var(--rs-primary);
+  border-radius: 50%;
+  animation: rs-spin 0.75s linear infinite;
+}
+
+@keyframes rs-spin {
+  to { transform: rotate(360deg); }
+}
+
+.rs-analyzing p {
+  font-size: 13px;
+  color: var(--rs-text-muted);
+  margin: 0;
+}
+
+/* ─── Results Container ──────────────────────────────── */
+.rs-results {
+  padding: 0 0 24px;
+}
+
+/* ─── Score Ring ─────────────────────────────────────── */
+.rs-score-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px 16px 12px;
+}
+
+.rs-score-ring {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.rs-ring-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.rs-ring-bg {
+  fill: none;
+  stroke: var(--rs-border);
+  stroke-width: 10;
+}
+
+.rs-ring-fill {
+  fill: none;
+  stroke: var(--rs-primary);
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.4s;
+}
+
+.rs-score-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.rs-score-num {
+  display: block;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--rs-text);
+  line-height: 1;
+}
+
+.rs-score-label {
+  font-size: 10px;
+  color: var(--rs-text-muted);
+}
+
+/* Grade Badge */
+.rs-grade-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 900;
+  color: #fff;
+  background: #9aa0a6;
+  flex-shrink: 0;
+}
+
+.rs-grade-s { background: #6200ea; }
+.rs-grade-a { background: #38a169; }
+.rs-grade-b { background: #D85A30; }
+.rs-grade-c { background: #dd6b20; }
+.rs-grade-d { background: #e53e3e; }
+.rs-grade-f { background: #9aa0a6; }
+
+/* ─── Demonetization Risk ────────────────────────────── */
+.rs-demonetize {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px 14px;
+  justify-content: center;
+}
+
+.rs-demonetize-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #9aa0a6;
+  flex-shrink: 0;
+  animation: rs-pulse 2s ease-in-out infinite;
+}
+
+@keyframes rs-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.rs-demonetize-label {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ─── Keyword Score ──────────────────────────────────── */
+.rs-keyword-score {
+  padding: 0 16px 4px;
+  margin-bottom: 4px;
+}
+
+.rs-kw-bar-wrap {
+  height: 6px;
+  background: var(--rs-border);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 6px 0 4px;
+}
+
+.rs-kw-bar {
+  height: 100%;
+  background: var(--rs-primary);
+  border-radius: 3px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 0;
+}
+
+.rs-kw-score-num {
+  font-size: 11px;
+  color: var(--rs-text-muted);
+  float: right;
+  margin-top: -18px;
+}
+
+/* ─── Sections ───────────────────────────────────────── */
+.rs-section {
+  padding: 12px 16px 8px;
+  border-top: 1px solid var(--rs-border);
+}
+
+.rs-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--rs-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rs-click-hint {
+  font-size: 9px;
+  font-weight: 400;
+  color: var(--rs-primary);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* ─── Checklist ──────────────────────────────────────── */
+.rs-checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.rs-checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  padding: 4px 0;
+}
+
+.rs-check-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.rs-check-label {
+  color: var(--rs-text);
+}
+
+.rs-fail .rs-check-label {
+  color: var(--rs-text-muted);
+}
+
+/* ─── Tags ───────────────────────────────────────────── */
+.rs-tags-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.rs-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  border: 1px solid transparent;
+}
+
+.rs-tag:hover {
+  opacity: 0.8;
+  transform: scale(1.03);
+}
+
+.rs-tag:active {
+  transform: scale(0.97);
+}
+
+.rs-tag-bangla {
+  background: #fff3cd;
+  color: #856404;
+  border-color: #ffc107;
+}
+
+.rs-tag-banglish {
+  background: var(--rs-primary-light);
+  color: var(--rs-primary-dark);
+  border-color: var(--rs-primary);
+}
+
+.rs-tag-english {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-color: #66bb6a;
+}
+
+.rs-no-data {
+  font-size: 12px;
+  color: var(--rs-text-muted);
+  font-style: italic;
+  margin: 0;
+}
+
+/* ─── Title Suggestions ──────────────────────────────── */
+.rs-titles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rs-title-suggestion {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: #f8f9fa;
+  border: 1px solid var(--rs-border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.rs-title-suggestion:hover {
+  border-color: var(--rs-primary);
+  background: var(--rs-primary-light);
+}
+
+.rs-title-num {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  background: var(--rs-primary);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.rs-title-text {
+  flex: 1;
+  font-size: 12px;
+  color: var(--rs-text);
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.rs-apply-btn {
+  flex-shrink: 0;
+  background: var(--rs-primary);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+  align-self: center;
+  white-space: nowrap;
+}
+
+.rs-apply-btn:hover {
+  background: var(--rs-primary-dark);
+}
+
+.rs-apply-btn.rs-applied {
+  background: var(--rs-pass);
+}
+
+/* ─── Utility ────────────────────────────────────────── */
+.rs-keyword-score .rs-section-title {
+  border-top: none;
+  margin-bottom: 0;
+}
