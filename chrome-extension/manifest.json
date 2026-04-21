@@ -1,0 +1,45 @@
+{
+  "manifest_version": 3,
+  "name": "RankSpark — YouTube SEO",
+  "version": "1.0.0",
+  "description": "AI-powered YouTube SEO analyzer. Get live scores, tag suggestions, and title optimizations right inside YouTube Studio.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "alarms"
+  ],
+  "host_permissions": [
+    "https://studio.youtube.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://studio.youtube.com/*"],
+      "js": ["content.js"],
+      "css": ["sidebar.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "RankSpark — YouTube SEO"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["sidebar.css", "icons/*"],
+      "matches": ["https://studio.youtube.com/*"]
+    }
+  ]
+}
